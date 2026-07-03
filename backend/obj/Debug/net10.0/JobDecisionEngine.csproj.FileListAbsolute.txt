@@ -6,7 +6,6 @@ C:\Binay\webdev\Projects\Job Decision Engine\backend\obj\Debug\net10.0\JobDecisi
 C:\Binay\webdev\Projects\Job Decision Engine\backend\obj\Debug\net10.0\JobDecisionEngine.csproj.CoreCompileInputs.cache
 C:\Binay\webdev\Projects\Job Decision Engine\backend\obj\Debug\net10.0\JobDecisionEngine.MvcApplicationPartsAssemblyInfo.cs
 C:\Binay\webdev\Projects\Job Decision Engine\backend\obj\Debug\net10.0\JobDecisionEngine.MvcApplicationPartsAssemblyInfo.cache
-C:\Binay\webdev\Projects\Job Decision Engine\backend\bin\Debug\net10.0\appsettings.Development.json
 C:\Binay\webdev\Projects\Job Decision Engine\backend\bin\Debug\net10.0\appsettings.json
 C:\Binay\webdev\Projects\Job Decision Engine\backend\bin\Debug\net10.0\JobDecisionEngine.staticwebassets.endpoints.json
 C:\Binay\webdev\Projects\Job Decision Engine\backend\bin\Debug\net10.0\JobDecisionEngine.exe
@@ -131,3 +130,5 @@ C:\Binay\webdev\Projects\Job Decision Engine\backend\obj\Debug\net10.0\refint\Jo
 C:\Binay\webdev\Projects\Job Decision Engine\backend\obj\Debug\net10.0\JobDecisionEngine.pdb
 C:\Binay\webdev\Projects\Job Decision Engine\backend\obj\Debug\net10.0\JobDecisionEngine.genruntimeconfig.cache
 C:\Binay\webdev\Projects\Job Decision Engine\backend\obj\Debug\net10.0\ref\JobDecisionEngine.dll
+C:\Binay\webdev\Projects\Job Decision Engine\backend\obj\Debug\net10.0\JobDecisionEngine.sourcelink.json
+C:\Binay\webdev\Projects\Job Decision Engine\backend\bin\Debug\net10.0\appsettings.Developement.json
