@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("JobDecisionEngine")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0f9b668dca673d8efe650b985ad07a6ec4a36fae")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+60c3800bf5777b11a99c330078d267d471c1c418")]
 [assembly: System.Reflection.AssemblyProductAttribute("JobDecisionEngine")]
 [assembly: System.Reflection.AssemblyTitleAttribute("JobDecisionEngine")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
