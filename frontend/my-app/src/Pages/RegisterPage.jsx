@@ -4,6 +4,7 @@ import { useAuth } from '../Context/AuthContext'
 import AuthComponet from '../components/AuthComponet'
 
 export default function RegisterPage() {
+  const navigate = useNavigate()
 
   return (
     <div className="page-shell">
