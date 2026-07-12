@@ -73,7 +73,8 @@ namespace JobDecisionEngine.Services
                 {
                     Id = user.Id,
                     Email = user.Email,
-                    FullName = user.FullName
+                    FullName = user.FullName,
+                    IsOnboarded = user.IsOnBoarded
                 }
             };
         }
@@ -115,7 +116,8 @@ namespace JobDecisionEngine.Services
                 {
                     Id = user.Id,
                     Email = user.Email,
-                    FullName = user.FullName
+                    FullName = user.FullName,
+                    IsOnboarded = user.IsOnBoarded
                 }
             };
         }

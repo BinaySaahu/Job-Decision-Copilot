@@ -11,6 +11,10 @@ export function AuthProvider({ children }) {
 
   const [token, setToken] = useState(() => localStorage.getItem('access-token'))
   const [refreshtoken, setRefreshToken] = useState(() => localStorage.getItem('refresh-token'))
+  const [isOnboarded, setIsOnboarded] = useState(() => {
+    const savedOnboarded = localStorage.getItem('is-onboarded')
+    return savedOnboarded === 'true'
+  })
 
   const [loading, setLoading] = useState(false)
 
@@ -38,6 +42,9 @@ export function AuthProvider({ children }) {
         setUser(result.user)
         setToken(result.accessToken)
         setRefreshToken(result.refreshToken)
+        const onboarded = result.user?.isOnboarded || false
+        setIsOnboarded(onboarded)
+        localStorage.setItem('is-onboarded', onboarded ? 'true' : 'false')
         return { success: true, message: "Login successful." }
       }
       return { success: false, message: result.message }
@@ -54,6 +61,8 @@ export function AuthProvider({ children }) {
         setUser(result.user)
         setToken(result.accessToken)
         setRefreshToken(result.refreshToken)
+        setIsOnboarded(false)
+        localStorage.setItem('is-onboarded', 'false')
         return { success: true, message: "Registration successful." }
       }
       return { success: false, message: result.message }
@@ -66,6 +75,7 @@ export function AuthProvider({ children }) {
     setUser(null)
     setToken(null)
     setRefreshToken(null)
+    setIsOnboarded(false)
     logoutUser()
   }
 
@@ -76,6 +86,7 @@ export function AuthProvider({ children }) {
       refreshtoken,
       loading,
       isAuthenticated: Boolean(token && user),
+      isOnboarded,
       login,
       register,
       logout,

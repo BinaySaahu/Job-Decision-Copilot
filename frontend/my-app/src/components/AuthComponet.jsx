@@ -23,7 +23,7 @@ const AuthComponet = ({isLogin}) => {
     
 
     if (result.success) {
-      navigate("/dashboard");
+      navigate("/onboard");
     } else {
       setMessage(result.message || "Request failed.");
     }

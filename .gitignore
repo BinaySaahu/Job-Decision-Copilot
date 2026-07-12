@@ -1,3 +1,9 @@
+appsettings.Developement.json
+appsettings.json
+
+**/bin/
+**/obj/
+
 # Logs
 logs
 *.log
@@ -22,3 +28,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+*.docx
+
+*.docx
+Project planning.docx

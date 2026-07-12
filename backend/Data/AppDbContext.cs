@@ -11,6 +11,7 @@ namespace JobDecisionEngine.Data
 
         public DbSet<User> Users { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }
+        public DbSet<OnboardingProfile> OnboardingProfiles { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

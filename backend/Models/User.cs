@@ -9,6 +9,7 @@ namespace JobDecisionEngine.Models
         public string PasswordHash { get; set; }
         public string FullName { get; set; }
         public bool IsActive { get; set; } = true;
+        public bool IsOnBoarded { get; set; } = false;
         public string? OAuthProvider { get; set; } // "Google", "GitHub", or null for email/password
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
