@@ -45,11 +45,16 @@ const OnBoardingPage = () => {
       }
 
       const response = await submitOnboarding(payload)
+      console.log(response)
       if (response?.message) {
         localStorage.setItem('is-onboarded', 'true')
         navigate('/dashboard')
       }
     } catch (error) {
+      if(error.response?.status === 401) {
+        logout()
+        navigate('/login')
+      }
       setMessage(error?.response?.data?.message || 'Unable to complete onboarding.')
     } finally {
       setLoading(false)

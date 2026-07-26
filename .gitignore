@@ -32,3 +32,10 @@ dist-ssr
 
 *.docx
 Project planning.docx
+
+venv
+.venv
+__pycache__
+
+.env
+

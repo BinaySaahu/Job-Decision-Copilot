@@ -18,11 +18,22 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IOnboardingService, OnboardingService>();
 builder.Services.AddAWSService<IAmazonS3>();
 builder.Services.AddScoped<IS3Service, S3Service>();
+builder.Services.AddHttpClient<IResumeParserService, ResumeParserService>(client =>
+{
+    var fastApiBaseUrl = builder.Configuration["FastApi:BaseUrl"];
+    if (string.IsNullOrWhiteSpace(fastApiBaseUrl))
+    {
+        throw new InvalidOperationException("FastAPI base URL is not configured.");
+    }
+
+    client.BaseAddress = new Uri(fastApiBaseUrl);
+});
 
 builder.Services.AddAuthentication("Bearer")
     .AddJwtBearer("Bearer", options =>
     {
-        var key = Encoding.ASCII.GetBytes(builder.Configuration["Jwt:Secret"]);
+        var secret = builder.Configuration["Jwt:Secret"] ?? throw new InvalidOperationException("JWT secret is not configured.");
+        var key = Encoding.ASCII.GetBytes(secret);
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuerSigningKey = true,

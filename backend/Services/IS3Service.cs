@@ -5,6 +5,7 @@ namespace JobDecisionEngine.Services
     {
         Task<string> UploadFileAsync(IFormFile file, string folder);
         Task DeleteFileAsync(string fileUrl);
+        Task<string> ExtractTextFromS3Async(string key);
     }
     
 }

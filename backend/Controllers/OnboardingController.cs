@@ -27,17 +27,17 @@ namespace JobDecisionEngine.Controllers
 
             try
             {
-                var rslt = await _onboardingService.SaveOnboardingAsync(request);
+                var profile = await _onboardingService.SaveOnboardingAsync(request);
 
-                if (rslt == null)
+                if (profile == null)
                 {
-                    return NotFound(new { message = "User not found." });
+                    return BadRequest(new { message = "Error occurred while saving onboarding information." });
                 }
 
                 return Ok(new
                 {
                     message = "Onboarding completed successfully.",
-                    // profile
+                    profile
                 });
             }
             catch (Exception ex)

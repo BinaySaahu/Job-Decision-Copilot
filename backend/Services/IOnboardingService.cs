@@ -5,7 +5,7 @@ namespace JobDecisionEngine.Services
 {
     public interface IOnboardingService
     {
-        Task<bool?> SaveOnboardingAsync(OnboardingRequest request);
+        Task<OnboardingResponse?> SaveOnboardingAsync(OnboardingRequest request);
         Task<OnboardingResponse?> GetOnboardingProfileAsync(int userId);
     }
 }

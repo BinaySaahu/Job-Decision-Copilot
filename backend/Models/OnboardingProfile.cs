@@ -8,6 +8,10 @@ namespace JobDecisionEngine.Models
         public int UserId { get; set; }
         public string? ExperienceYears { get; set; }
         public string? ResumeUrl { get; set; }
+        public ResumeParseStatus ParseStatus { get; set; } = ResumeParseStatus.NotStarted;
+        public string? ParsedResumeJson { get; set; }
+        public string? LastParseError { get; set; }
+        public DateTime? ParsedAt { get; set; }
         public List<string>? InterestedRoles { get; set; }
         public string? EmploymentType { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
