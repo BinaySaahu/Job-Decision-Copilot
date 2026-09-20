@@ -15,11 +15,13 @@ namespace JobDecisionEngine.Services
     {
         private readonly AppDbContext _context;
         private readonly IConfiguration _configuration;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public AuthService(AppDbContext context, IConfiguration configuration)
+        public AuthService(AppDbContext context, IConfiguration configuration, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
             _configuration = configuration;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<AuthResponse> RegisterAsync(RegisterRequest request)
@@ -63,12 +65,23 @@ namespace JobDecisionEngine.Services
             var accessToken = GenerateAccessToken(user);
             var refreshToken = await GenerateRefreshToken(user);
 
+            _httpContextAccessor.HttpContext!.Response.Cookies.Append(
+                "refreshToken",
+                refreshToken,
+                new CookieOptions
+                {
+                    HttpOnly = true,
+                    Secure = true,
+                    SameSite = SameSiteMode.None,
+                    Expires = DateTimeOffset.UtcNow.AddDays(7)
+                }
+            );
+
             return new AuthResponse
             {
                 Success = true,
                 Message = "Registration successful",
                 AccessToken = accessToken,
-                RefreshToken = refreshToken,
                 User = new UserDto
                 {
                     Id = user.Id,
@@ -106,12 +119,25 @@ namespace JobDecisionEngine.Services
             var accessToken = GenerateAccessToken(user);
             var refreshToken = await GenerateRefreshToken(user);
 
+            _httpContextAccessor.HttpContext!.Response.Cookies.Append(
+                "refreshToken",
+                refreshToken,
+                new CookieOptions
+                {
+                    HttpOnly = true,
+                    Secure = true,
+                    SameSite = SameSiteMode.None,
+                    Expires = DateTimeOffset.UtcNow.AddDays(7),
+                    Path = "/",
+                    Domain = "localhost" // Adjust this based on your frontend domain
+                }
+            );
+
             return new AuthResponse
             {
                 Success = true,
                 Message = "Login successful",
                 AccessToken = accessToken,
-                RefreshToken = refreshToken,
                 User = new UserDto
                 {
                     Id = user.Id,
@@ -122,68 +148,91 @@ namespace JobDecisionEngine.Services
             };
         }
 
-        public async Task<AuthResponse> RefreshTokenAsync(RefreshTokenRequest request)
+        public async Task<AuthResponse> RefreshTokenAsync(string token)
         {
+            bool oldTokenStatus = false;
+            
             var refreshToken = await _context.RefreshTokens
                 .Include(rt => rt.User)
-                .FirstOrDefaultAsync(rt => rt.Token == request.RefreshToken);
-
-            if (refreshToken == null || refreshToken.IsRevoked || refreshToken.ExpiryDate < DateTime.UtcNow)
+                .FirstOrDefaultAsync(rt => rt.Token == token);
+            
+            if (refreshToken == null)
             {
                 return new AuthResponse
                 {
                     Success = false,
-                    Message = "Invalid or expired refresh token"
+                    Message = "Invalid refresh token"
                 };
             }
+
+            if (refreshToken.ExpiryDate < DateTime.UtcNow)
+            {
+                oldTokenStatus = await RevokeTokenAsync(token);
+                return new AuthResponse
+                {
+                    Success = false,
+                    Message = "Refresh token has expired"
+                };
+            }
+
+            
 
             var user = refreshToken.User;
             var newAccessToken = GenerateAccessToken(user);
             var newRefreshToken = await GenerateRefreshToken(user);
 
-            // Revoke old refresh token
-            refreshToken.IsRevoked = true;
-            _context.RefreshTokens.Update(refreshToken);
-            await _context.SaveChangesAsync();
+            _httpContextAccessor.HttpContext!.Response.Cookies.Append(
+                "refreshToken",
+                newRefreshToken,
+                new CookieOptions
+                {
+                    HttpOnly = true,
+                    Secure = true,
+                    SameSite = SameSiteMode.None,
+                    Expires = DateTimeOffset.UtcNow.AddDays(7),
+                    Path = "/",
+                    Domain = "localhost" // Adjust this based on your frontend domain
+                }
+            );
 
             return new AuthResponse
             {
                 Success = true,
                 Message = "Token refreshed",
                 AccessToken = newAccessToken,
-                RefreshToken = newRefreshToken,
                 User = new UserDto
                 {
                     Id = user.Id,
                     Email = user.Email,
-                    FullName = user.FullName
+                    FullName = user.FullName,
+                    IsOnboarded = user.IsOnBoarded
                 }
             };
         }
 
-        public async Task<bool> ValidateTokenAsync(string token)
-        {
-            try
-            {
-                var tokenHandler = new JwtSecurityTokenHandler();
-                var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Secret"]);
+        // public async Task<bool> ValidateTokenAsync(string token)
+        // {
+        //     try
+        //     {
+        //         var tokenHandler = new JwtSecurityTokenHandler();
+        //         var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Secret"]);
 
-                tokenHandler.ValidateToken(token, new TokenValidationParameters
-                {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(key),
-                    ValidateIssuer = false,
-                    ValidateAudience = false,
-                    ClockSkew = TimeSpan.Zero
-                }, out SecurityToken validatedToken);
+        //         tokenHandler.ValidateToken(token, new TokenValidationParameters
+        //         {
+        //             ValidateIssuerSigningKey = true,
+        //             IssuerSigningKey = new SymmetricSecurityKey(key),
+        //             ValidateIssuer = false,
+        //             ValidateAudience = false,
+        //             ClockSkew = TimeSpan.Zero
+        //         }, out SecurityToken validatedToken);
 
-                return validatedToken != null;
-            }
-            catch
-            {
-                return false;
-            }
-        }
+        //         return validatedToken != null;
+        //     }
+        //     catch
+        //     {
+        //         return false;
+        //     }
+        // }
 
         public async Task<bool> RevokeTokenAsync(string refreshToken)
         {
@@ -193,8 +242,7 @@ namespace JobDecisionEngine.Services
             if (token == null)
                 return false;
 
-            token.IsRevoked = true;
-            _context.RefreshTokens.Update(token);
+            _context.RefreshTokens.Remove(token);
             await _context.SaveChangesAsync();
 
             return true;
@@ -225,12 +273,19 @@ namespace JobDecisionEngine.Services
 
         private async Task<string> GenerateRefreshToken(User user)
         {
+            var existingToken = await _context.RefreshTokens
+                .FirstOrDefaultAsync(rt => rt.UserId == user.Id);
+
+            if (existingToken != null)
+            {
+                _context.RefreshTokens.Remove(existingToken);
+                await _context.SaveChangesAsync();
+            }
             var refreshToken = new RefreshToken
             {
                 UserId = user.Id,
                 Token = Convert.ToBase64String(System.Security.Cryptography.RandomNumberGenerator.GetBytes(64)),
                 ExpiryDate = DateTime.UtcNow.AddDays(7),
-                IsRevoked = false
             };
 
             _context.RefreshTokens.Add(refreshToken);

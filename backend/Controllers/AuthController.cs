@@ -36,12 +36,14 @@ namespace JobDecisionEngine.Controllers
         }
 
         [HttpPost("refresh")]
-        public async Task<IActionResult> Refresh([FromBody] RefreshTokenRequest request)
+        public async Task<IActionResult> Refresh()
         {
+            var token = Request.Cookies["refreshToken"];
+            Console.WriteLine($"Refresh token from cookie: {token}");
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var response = await _authService.RefreshTokenAsync(request);
+            var response = await _authService.RefreshTokenAsync(token);
             return response.Success ? Ok(response) : Unauthorized(response);
         }
 
@@ -52,11 +54,11 @@ namespace JobDecisionEngine.Controllers
             return success ? Ok(new { message = "Logout successful" }) : BadRequest(new { message = "Logout failed" });
         }
 
-        [HttpPost("validate")]
-        public async Task<IActionResult> Validate([FromBody] string token)
-        {
-            var isValid = await _authService.ValidateTokenAsync(token);
-            return Ok(new { isValid });
-        }
+        // [HttpPost("validate")]
+        // public async Task<IActionResult> Validate([FromBody] string token)
+        // {
+        //     var isValid = await _authService.ValidateTokenAsync(token);
+        //     return Ok(new { isValid });
+        // }
     }
 }

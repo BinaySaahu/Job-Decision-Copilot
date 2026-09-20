@@ -6,8 +6,8 @@ namespace JobDecisionEngine.Services
     {
         Task<AuthResponse> RegisterAsync(RegisterRequest request);
         Task<AuthResponse> LoginAsync(LoginRequest request);
-        Task<AuthResponse> RefreshTokenAsync(RefreshTokenRequest request);
-        Task<bool> ValidateTokenAsync(string token);
+        Task<AuthResponse> RefreshTokenAsync(string token);
+        // Task<bool> ValidateTokenAsync(string token);
         Task<bool> RevokeTokenAsync(string refreshToken);
     }
 }

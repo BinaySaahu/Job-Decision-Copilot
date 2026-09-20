@@ -1,106 +1,112 @@
-import { createContext, useContext, useEffect, useMemo, useState } from 'react'
-import { loginUser, registerUser, logoutUser } from '../Services/authService'
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { loginUser, registerUser, refresh } from "../Services/authService";
+import { useNavigate } from "react-router-dom";
 
-const AuthContext = createContext(null)
+const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
+  const navigate = useNavigate();
   const [user, setUser] = useState(() => {
-    const savedUser = localStorage.getItem('user')
-    return JSON.parse(savedUser)
-  })
+    const savedUser = localStorage.getItem("user");
+    return JSON.parse(savedUser);
+  });
 
-  const [token, setToken] = useState(() => localStorage.getItem('access-token'))
-  const [refreshtoken, setRefreshToken] = useState(() => localStorage.getItem('refresh-token'))
+  const [token, setToken] = useState(() =>
+    localStorage.getItem("access-token"),
+  );
+  // const [refreshtoken, setRefreshToken] = useState(() =>
+  //   localStorage.getItem("refresh-token"),
+  // );
   const [isOnboarded, setIsOnboarded] = useState(() => {
-    const savedOnboarded = localStorage.getItem('is-onboarded')
-    return savedOnboarded === 'true'
-  })
+    const savedOnboarded = localStorage.getItem("is-onboarded");
+    return savedOnboarded === "true";
+  });
 
-  const [loading, setLoading] = useState(false)
-
-  // useEffect(() => {
-  //   if (user) {
-  //     localStorage.setItem('user', JSON.stringify(user))
-  //   } else {
-  //     localStorage.removeItem('user')
-  //   }
-  // }, [user])
-
-  // useEffect(() => {
-  //   if (token) {
-  //     localStorage.setItem('job-decision-token', token)
-  //   } else {
-  //     localStorage.removeItem('job-decision-token')
-  //   }
-  // }, [token])
+  const [loading, setLoading] = useState(false);
 
   const login = async (email, password) => {
-    setLoading(true)
+    setLoading(true);
     try {
-      const result = await loginUser(email, password)
+      const result = await loginUser(email, password);
       if (result.success) {
-        setUser(result.user)
-        setToken(result.accessToken)
-        setRefreshToken(result.refreshToken)
-        const onboarded = result.user?.isOnboarded || false
-        setIsOnboarded(onboarded)
-        localStorage.setItem('is-onboarded', onboarded ? 'true' : 'false')
-        return { success: true, message: "Login successful." }
+        saveUser(result);
+        return { success: true, message: "Login successful." };
       }
-      return { success: false, message: result.message }
+      return { success: false, message: result.message };
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const register = async (email, password, fullName) => {
-    setLoading(true)
+    setLoading(true);
     try {
-      const result = await registerUser(email, password, fullName)
+      const result = await registerUser(email, password, fullName);
       if (result.success) {
-        setUser(result.user)
-        setToken(result.accessToken)
-        setRefreshToken(result.refreshToken)
-        setIsOnboarded(false)
-        localStorage.setItem('is-onboarded', 'false')
-        return { success: true, message: "Registration successful." }
+        saveUser(result);
+        return { success: true, message: "Registration successful." };
       }
-      return { success: false, message: result.message }
+      return { success: false, message: result.message };
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const logout = () => {
-    setUser(null)
-    setToken(null)
-    setRefreshToken(null)
-    setIsOnboarded(false)
-    logoutUser()
-  }
+    setUser(null);
+    setToken(null);
+    setIsOnboarded(false);
+    localStorage.removeItem("access-token");
+    localStorage.removeItem("user");
+    localStorage.removeItem("refresh-token");
+    localStorage.removeItem("is-onboarded");
+    localStorage.removeItem("profile");
+    navigate("/login");
+  };
+
+  const refreshToken = async () => {
+    try{
+      const resp = await refresh();
+
+    }catch (error) {
+      console.error("Refresh token error:", error)
+      return false;
+    }
+    return true;
+  };
+
+  const saveUser = (result) => {
+    setUser(result.user);
+    setToken(result.accessToken);
+    const onboarded = result.user?.isOnboarded || false;
+    setIsOnboarded(onboarded);
+    localStorage.setItem("is-onboarded", onboarded ? "true" : "false");
+  };
+
 
   const value = useMemo(
     () => ({
       user,
       token,
-      refreshtoken,
+      // refreshtoken,
       loading,
       isAuthenticated: Boolean(token && user),
       isOnboarded,
       login,
       register,
       logout,
+      refreshToken,
     }),
-    [user, token, loading]
-  )
+    [user, token, loading],
+  );
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
 export function useAuth() {
-  const context = useContext(AuthContext)
+  const context = useContext(AuthContext);
   if (!context) {
-    throw new Error('useAuth must be used inside an AuthProvider')
+    throw new Error("useAuth must be used inside an AuthProvider");
   }
-  return context
+  return context;
 }

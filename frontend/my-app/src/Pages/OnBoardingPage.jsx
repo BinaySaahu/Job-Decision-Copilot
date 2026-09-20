@@ -7,7 +7,7 @@ const employmentTypes = ['Full Time', 'Part Time', 'Contract', 'Internship']
 
 const OnBoardingPage = () => {
   const navigate = useNavigate()
-  const { user, logout } = useAuth()
+  const { user, logout, refreshToken } = useAuth()
   const [form, setForm] = useState({
     experienceYears: '',
     interestedRoles: '',
@@ -52,8 +52,12 @@ const OnBoardingPage = () => {
       }
     } catch (error) {
       if(error.response?.status === 401) {
+        if(await refreshToken()){
+          handleSubmit(event)
+          return;
+        }
         logout()
-        navigate('/login')
+
       }
       setMessage(error?.response?.data?.message || 'Unable to complete onboarding.')
     } finally {

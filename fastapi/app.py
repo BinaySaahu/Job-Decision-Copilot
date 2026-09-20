@@ -9,6 +9,10 @@ app = FastAPI(title="Resume Parsing API")
 
 normalizer = ResumeNormalizer()
 
+@app.get("/test")
+async def test_api():
+    return "Congratulations Your API is working"
+
 @app.post("/parse-resume", response_model=ParsedResumeResponse)
 async def parse_resume(request: ResumeTextRequest):
     try:

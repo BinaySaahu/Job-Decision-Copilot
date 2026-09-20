@@ -1,0 +1,62 @@
+[
+  {
+    "id": 1,
+    "title": "Frontend Engineer",
+    "company": "Acme Web",
+    "description": "Build and maintain user-facing web applications. Collaborate with designers and backend engineers. Write clean, testable code and participate in code reviews.",
+    "requiredSkills": ["JavaScript", "React", "HTML", "CSS"],
+    "applyUrl": "https://example.com/jobs/frontend-engineer",
+    "score": 92,
+    "matchedSkills": ["JavaScript", "React", "HTML"],
+    "missingSkills": ["CSS"],
+    "summary": ["Build and maintain user-facing web applications", "Collaborate with designers and backend engineers", "Write clean, testable code", "Participate in code reviews"]
+  },
+  {
+    "id": 2,
+    "title": "Backend Engineer",
+    "company": "DataCorp",
+    "description": "Develop and maintain REST APIs and services. Work on database schema design and performance tuning. Ensure security and reliability of services.",
+    "requiredSkills": ["C#", ".NET", "SQL", "REST"],
+    "applyUrl": "https://example.com/jobs/backend-engineer",
+    "score": 78,
+    "matchedSkills": ["C#", "REST"],
+    "missingSkills": ["SQL", ".NET"],
+    "summary": ["Develop and maintain REST APIs and services", "Database schema design and performance tuning", "Ensure security and reliability of services"]
+  },
+  {
+    "id": 3,
+    "title": "Machine Learning Engineer",
+    "company": "AI Solutions",
+    "description": "Design and deploy ML models into production. Work on data pipelines and feature engineering. Collaborate with cross-functional teams to productize ML solutions.",
+    "requiredSkills": ["Python", "Machine Learning", "TensorFlow", "Data Engineering"],
+    "applyUrl": "https://example.com/jobs/ml-engineer",
+    "score": 66,
+    "matchedSkills": ["Python", "Machine Learning"],
+    "missingSkills": ["TensorFlow", "Data Engineering"],
+    "summary": ["Design and deploy ML models into production", "Work on data pipelines and feature engineering", "Collaborate with cross-functional teams"]
+  },
+  {
+    "id": 4,
+    "title": "Frontend Engineer",
+    "company": "Acme Web",
+    "description": "Build and maintain user-facing web applications. Collaborate with designers and backend engineers. Write clean, testable code and participate in code reviews.",
+    "requiredSkills": ["JavaScript", "React", "HTML", "CSS"],
+    "applyUrl": "https://example.com/jobs/frontend-engineer",
+    "score": 92,
+    "matchedSkills": ["JavaScript", "React", "HTML"],
+    "missingSkills": ["CSS"],
+    "summary": ["Build and maintain user-facing web applications", "Collaborate with designers and backend engineers", "Write clean, testable code", "Participate in code reviews"]
+  },
+  {
+    "id": 5,
+    "title": "Frontend Engineer",
+    "company": "Acme Web",
+    "description": "Build and maintain user-facing web applications. Collaborate with designers and backend engineers. Write clean, testable code and participate in code reviews.",
+    "requiredSkills": ["JavaScript", "React", "HTML", "CSS"],
+    "applyUrl": "https://example.com/jobs/frontend-engineer",
+    "score": 92,
+    "matchedSkills": ["JavaScript", "React", "HTML"],
+    "missingSkills": ["CSS"],
+    "summary": ["Build and maintain user-facing web applications", "Collaborate with designers and backend engineers", "Write clean, testable code", "Participate in code reviews"]
+  }
+]

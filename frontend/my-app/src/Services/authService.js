@@ -1,30 +1,19 @@
 import axios from 'axios'
-
-function readStoredUsers() {
-  try {
-    return JSON.parse(localStorage.getItem('user') || '[]')
-  } catch {
-    return []
-  }
-}
-
-function writeStoredUsers(users) {
-  localStorage.setItem('user', JSON.stringify(users))
-}
+// import {useProfile} from '../Context/ProfileContext'
 
 export async function loginUser(email, password) {
   // await delay(700)
   const URL = import.meta.env.VITE_BASE_URL + "/auth/login"
+  // const { clearProfile } = useProfile()
   
   try{
-    const response = await axios.post(URL, {email, password})
+    const response = await axios.post(URL, {email, password}, {withCredentials: true})
     console.log("Login response:", response.data)
     if(response.data.success === false){
       throw new Error(response.data.message || "Login failed.")
     }
     localStorage.setItem('access-token', response.data.accessToken)
     localStorage.setItem('user', JSON.stringify(response.data.user))
-    localStorage.setItem('refresh-token', response.data.refreshToken)
     return response.data
   } catch (error) {
     console.error("Login error:", error)
@@ -40,14 +29,13 @@ export async function registerUser(email, password, fullName) {
   const URL = import.meta.env.VITE_BASE_URL + "/auth/register"
 
   try{
-    const response = await axios.post(URL, {email, password, fullName})
+    const response = await axios.post(URL, {email, password, fullName}, { withCredentials: true })
     console.log("Registration response:", response.data)
     if(response.data.success === false){
       throw new Error(response.data.message || "Registration failed.")
     }
     localStorage.setItem('access-token', response.data.accessToken)
     localStorage.setItem('user', JSON.stringify(response.data.user))
-    localStorage.setItem('refresh-token', response.data.refreshToken)
     return response.data
   }catch (error) {
     console.error("Registration error:", error)
@@ -58,8 +46,22 @@ export async function registerUser(email, password, fullName) {
   }
 }
 
-export function logoutUser() {
-  localStorage.removeItem('access-token')
-  localStorage.removeItem('user')
-  localStorage.removeItem('refresh-token')
+export async function refresh() {
+  const URL = import.meta.env.VITE_BASE_URL + "/auth/refresh"
+
+  try {
+    const response = await axios.post(URL,{}, { withCredentials: true })
+    console.log("Refresh token response:", response.data)
+    if (response.data.success === false) {
+      throw new Error(response.data.message || "Failed to refresh token.")
+    }
+    localStorage.setItem('access-token', response.data.accessToken)
+    return true
+  } catch (error) {
+    console.error("Refresh token error:", error)
+    return {
+      success: false,
+      message: error.message
+    }
+  }
 }
