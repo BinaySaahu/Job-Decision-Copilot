@@ -1,0 +1,49 @@
+name: Deploy .NET API to AWS Lambda
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  id-token: write
+  contents: read
+
+defaults:
+  run:
+    working-directory: backend
+
+env:
+  AWS_REGION: ap-south-1
+  FUNCTION_NAME: JobDecisionEngine
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.x'
+
+      - name: Restore
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::291811736257:role/github-lambda-deployment
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Install Lambda tools
+        run: dotnet tool install -g Amazon.Lambda.Tools
+
+      - name: Deploy
+        run: dotnet lambda deploy-function ${{ env.FUNCTION_NAME }}
