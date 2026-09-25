@@ -1,0 +1,11 @@
+{
+  "profile": "default",
+  "region": "ap-south-1",
+  "configuration": "Release",
+  "framework": "net10.0",
+  "function-name": "job-copilot-api",
+  "function-memory-size": 512,
+  "function-timeout": 30,
+  "function-runtime": "dotnet10",
+  "function-role": "arn:aws:iam::291811736257:role/JobDecisionCopilot-LambdaRole"
+}

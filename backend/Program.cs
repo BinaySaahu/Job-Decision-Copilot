@@ -3,11 +3,9 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using JobDecisionEngine.Data;
 using JobDecisionEngine.Services;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.OpenApi;
 using Scalar.AspNetCore;
 using Amazon.S3;
-using Amazon.Extensions.NETCore.Setup;
+using Amazon.Lambda.AspNetCoreServer.Hosting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -56,57 +54,25 @@ builder.Services.AddCors(options =>
     });
 });
 
+builder.Services.AddAWSLambdaHosting(LambdaEventSource.HttpApi);
+
 builder.Services.AddControllers();
 
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddEndpointsApiExplorer();
-
-// builder.Services.AddSwaggerGen(options =>
-// {
-//     options.SwaggerDoc("v1", new OpenApiInfo
-//     {
-//         Title = "Job Decision Engine API",
-//         Version = "v1",
-//         Description = "API for the Job Decision Engine application"
-//     });
-
-//     // Configure JWT Authentication
-//     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-//     {
-//         Name = "Authorization",
-//         Type = SecuritySchemeType.Http,
-//         Scheme = "bearer",
-//         BearerFormat = "JWT",
-//         In = ParameterLocation.Header,
-//         Description = "Enter your JWT token without the 'Bearer' prefix."
-//     });
-
-//     options.AddSecurityRequirement(new OpenApiSecurityRequirement
-//     {
-//         {
-//             new OpenApiSecurityScheme
-//             {
-//                 Reference = new OpenApiReference
-//                 {
-//                     Type = ReferenceType.SecurityScheme,
-//                     Id = "Bearer"
-//                 }
-//             },
-//             Array.Empty<string>()
-//         }
-//     });
-// });
 
 builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
-// using (var scope = app.Services.CreateScope())
-// {
-//     var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-//     dbContext.Database.Migrate();
-// }
+// Health check endpoint
+app.MapGet("/health", () =>
+{
+    return Results.Ok(new
+    {
+        status = "healthy",
+        message = "Job Decision Copilot API is running"
+    });
+});
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
