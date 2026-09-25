@@ -16,7 +16,7 @@ defaults:
 
 env:
   AWS_REGION: ap-south-1
-  FUNCTION_NAME: JobDecisionEngine
+  FUNCTION_NAME: job-copilot-api
 
 jobs:
   deploy:
