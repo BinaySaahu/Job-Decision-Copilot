@@ -37,6 +37,7 @@ CANONICAL_CERTIFICATIONS = {
 }
 
 GROK_API_KEY = os.getenv("GROK_API_KEY")
+MODEL = os.getenv("MODEL")
 client = Groq(
     api_key=GROK_API_KEY
 ) if GROK_API_KEY else None
@@ -69,7 +70,7 @@ async def normalize_with_ai(term: str, category: str) -> str:
     )
 
     response = client.chat.completions.create(
-        model="llama-3.1-8b-instant",
+        model=MODEL,
         messages=[{"role": "user", "content": prompt}],
         max_tokens=40,
         temperature=0.0
@@ -123,7 +124,7 @@ class ResumeNormalizer:
 
         prompt = self.build_prompt(text)
         response = client.chat.completions.create(
-            model="llama-3.1-8b-instant",
+            model=MODEL,
             messages=[{"role": "user", "content": prompt}],
             max_tokens=400,
             temperature=0.0

@@ -16,7 +16,7 @@ defaults:
 
 env:
   AWS_REGION: ap-south-1
-  FUNCTION_NAME: job-copilot-api
+  FUNCTION_NAME: JobDecisionEngine
 
 jobs:
   deploy:
@@ -40,7 +40,7 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::291811736257:role/github-lambda-deployment
+          role-to-assume: arn:aws:iam::790954697390:role/JobDecisionEngineLambdaRole
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Install Lambda tools
