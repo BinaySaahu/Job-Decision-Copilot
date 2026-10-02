@@ -47,7 +47,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowReact", policy =>
     {
-        policy.WithOrigins("http://localhost:5173", "http://localhost:3000", "http://localhost:4173")
+        policy.WithOrigins("http://localhost:5173", "http://localhost:3000", "http://localhost:4173", "https://dax2nf0s4fq9k.cloudfront.net")
             .AllowAnyMethod()
             .AllowAnyHeader()
             .AllowCredentials();
