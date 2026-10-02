@@ -1,13 +1,9 @@
-import axios from 'axios'
-// import {useProfile} from '../Context/ProfileContext'
+import api from "../config/axiosConfig"
 
 export async function loginUser(email, password) {
-  // await delay(700)
-  const URL = import.meta.env.VITE_BASE_URL + "/auth/login"
-  // const { clearProfile } = useProfile()
   
   try{
-    const response = await axios.post(URL, {email, password}, {withCredentials: true})
+    const response = await api.post("/auth/login", {email, password})
     console.log("Login response:", response.data)
     if(response.data.success === false){
       throw new Error(response.data.message || "Login failed.")
@@ -26,10 +22,9 @@ export async function loginUser(email, password) {
 }
 
 export async function registerUser(email, password, fullName) {
-  const URL = import.meta.env.VITE_BASE_URL + "/auth/register"
 
   try{
-    const response = await axios.post(URL, {email, password, fullName}, { withCredentials: true })
+    const response = await api.post("/auth/register", {email, password, fullName})
     console.log("Registration response:", response.data)
     if(response.data.success === false){
       throw new Error(response.data.message || "Registration failed.")
@@ -47,10 +42,9 @@ export async function registerUser(email, password, fullName) {
 }
 
 export async function refresh() {
-  const URL = import.meta.env.VITE_BASE_URL + "/auth/refresh"
 
   try {
-    const response = await axios.post(URL,{}, { withCredentials: true })
+    const response = await api.post("/auth/refresh", {})
     console.log("Refresh token response:", response.data)
     if (response.data.success === false) {
       throw new Error(response.data.message || "Failed to refresh token.")

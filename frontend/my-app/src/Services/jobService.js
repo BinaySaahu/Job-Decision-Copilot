@@ -1,7 +1,7 @@
-import axios from 'axios'
+import api from "../config/axiosConfig"
 import sampleJobs from '../data/sampleJobs.json'
 
-const API_BASE_URL = import.meta.env.VITE_BASE_URL
+
 
 function normalizeSkills(skills = []) {
   return (skills || []).map(s => String(s).trim().toLowerCase())
@@ -13,7 +13,7 @@ export async function getRecommendedJobs(userId, parsedResume) {
   // Try backend endpoint first
   if (API_BASE_URL && userId) {
     try {
-      const resp = await axios.get(`${API_BASE_URL}/jobs/recommended/${userId}`, {
+      const resp = await api.get(`/jobs/recommended/${userId}`, {
         headers: {
           Authorization: token ? `Bearer ${token}` : undefined,
         },
@@ -62,7 +62,7 @@ export function matchJobsLocally(parsedResume, jobs = []) {
 async function getProfileData(userId){
     try{
         const token = localStorage.getItem('access-token')
-        const resp = await axios.get(`${API_BASE_URL}/getDetails/${userId}`, {
+        const resp = await api.get(`/onboarding/getDetails/${userId}`, {
             headers: {
                 Authorization: token ? `Bearer ${token}` : undefined,
             },

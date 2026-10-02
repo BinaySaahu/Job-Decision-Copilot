@@ -1,6 +1,4 @@
-import axios from "axios";
-
-const API_BASE_URL = import.meta.env.VITE_BASE_URL;
+import api from "../config/axiosConfig"
 
 export async function submitOnboarding(payload) {
   const token = localStorage.getItem("access-token");
@@ -19,7 +17,7 @@ export async function submitOnboarding(payload) {
   if (payload.resume) {
     formData.append("resume", payload.resume);
   }
-  const response = await axios.post(`${API_BASE_URL}/onboarding`, formData, {
+  const response = await api.post("/onboarding", formData, {
     headers: {
       Authorization: `Bearer ${token}`,
       "Content-Type": "multipart/form-data",
