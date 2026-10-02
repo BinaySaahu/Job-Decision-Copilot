@@ -5,3 +5,4 @@ openai>=1.0.0
 rapidfuzz>=2.15.1
 python-dotenv>=1.0.0
 groq>=1.6.0
+magnum

@@ -4,14 +4,17 @@ from typing import List, Optional
 from enum import Enum
 from models import ParsedResumeResponse, ResumeTextRequest
 from normalizer import ResumeNormalizer
+from magnum import Magnum
 
 app = FastAPI(title="Resume Parsing API")
 
 normalizer = ResumeNormalizer()
 
-@app.get("/test")
-async def test_api():
-    return "Congratulations Your API is working"
+@app.get("/health")
+def health():
+    return {
+        "status": "healthy"
+    }
 
 @app.post("/parse-resume", response_model=ParsedResumeResponse)
 async def parse_resume(request: ResumeTextRequest):
@@ -23,3 +26,6 @@ async def parse_resume(request: ResumeTextRequest):
     except Exception as exc:
         print(str(exc))
         raise HTTPException(status_code=500, detail="Failed to parse resume text.")
+
+
+handler = Magnum(app)
