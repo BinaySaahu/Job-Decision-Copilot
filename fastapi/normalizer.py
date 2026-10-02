@@ -3,7 +3,6 @@ import os
 import re
 from typing import List, Optional
 from rapidfuzz import process, fuzz
-from openai import OpenAI
 from models import ParsedResumeResponse
 from dotenv import load_dotenv
 from groq import Groq
